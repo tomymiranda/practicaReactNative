@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {Text, View, StyleSheet, TouchableNativeFeedback} from 'react-native';
+import { Text, View, StyleSheet, TouchableNativeFeedback, Platform, TouchableOpacity } from 'react-native';
 
 // el signo de pregunta al lado del nombre props es para indicar q es opcional
 interface Props {
@@ -10,25 +10,53 @@ interface Props {
 }
 
 export const Boton = ({title, onPress, position = 'right'}: Props) => {
-  return (
-    /*cuando se usa el boton TouchableNativeFeedback, para ajustar su ubicacion
-      se debe poner dentro de una etiqueta <View></View> y pasarle el style 
-      que contiene la ubicacion
-      */
-    <View
-      style={[
-        styles.botonPosition,
-        position === 'left' ? styles.left : styles.right,
-      ]}>
-      <TouchableNativeFeedback
-        onPress={onPress}
-        background={TouchableNativeFeedback.Ripple('black',false,30)}>
-        <View style={styles.botonStyle}>
-          <Text style={styles.textBoton}>{title}</Text>
+  
+  const ios = () =>{
+       return (
+         /*cuando se usa el boton TouchableNativeFeedback, para ajustar su ubicacion
+          se debe poner dentro de una etiqueta <View></View> y pasarle el style 
+          que contiene la ubicacion
+
+
+          activeOpacity va desde 0 a 1
+          */
+         <TouchableOpacity
+           onPress={onPress}
+           activeOpacity={0.8}
+           style={[
+             styles.botonPosition,
+             position === 'left' ? styles.left : styles.right,
+           ]}>
+           <View style={styles.botonStyle}>
+             <Text style={styles.textBoton}>{title}</Text>
+           </View>
+         </TouchableOpacity>
+       );
+  }
+  
+  const android = () =>{
+     return (
+          /*cuando se usa el boton TouchableNativeFeedback, para ajustar su ubicacion
+          se debe poner dentro de una etiqueta <View></View> y pasarle el style 
+          que contiene la ubicacion
+          */
+        <View
+          style={[
+            styles.botonPosition,
+            position === 'left' ? styles.left : styles.right,
+          ]}>
+          <TouchableNativeFeedback
+            onPress={onPress}
+            background={TouchableNativeFeedback.Ripple('black', false, 30)}>
+            <View style={styles.botonStyle}>
+              <Text style={styles.textBoton}>{title}</Text>
+            </View>
+          </TouchableNativeFeedback>
         </View>
-      </TouchableNativeFeedback>
-    </View>
-  );
+     )
+  }
+  
+  return (Platform.OS === 'ios') ? ios() : android();
 };
 const styles = StyleSheet.create({
   botonStyle: {
